@@ -5,8 +5,8 @@ import {
   Routes, 
   Route, 
   Link,
-  // Navigate,
-  // useNavigate,
+  Navigate,
+  useNavigate,
   useMatch
 } from 'react-router-dom'
 
@@ -16,10 +16,9 @@ const Menu = () => {
   }
   return (
     <div>
-      {/*<Link to='/create' style={padding}>create new</Link>*/}
       <Link to='/' style={padding}>anecdotes</Link>
+      <Link to='/create' style={padding}>create new</Link> 
       <Link to='/about' style={padding}>about</Link> 
-      <Link to='/create' style={padding}>create</Link> 
     </div>
   )
 }
@@ -35,8 +34,8 @@ const SingleAnecdote = ({ anecdote }) => {
   return (
     <div>
       <h2>{anecdote.content} by {anecdote.author}</h2>
-      <div>has {anecdote.votes} votes</div>
-      <div>for more info see <a href={anecdote.info}>{anecdote.info}</a></div>
+      <p>has {anecdote.votes} votes</p>
+      <p>for more info see <a href={`https://${anecdote.info}`}target='blank'>{anecdote.info}</a></p>
     </div>
   )
 }
@@ -115,18 +114,19 @@ const CreateNew = (props) => {
 }
 
 const App = () => {
+  const navigate = useNavigate()
   const [anecdotes, setAnecdotes] = useState([
     {
       content: 'If it hurts, do it more often',
       author: 'Jez Humble',
-      info: 'https://martinfowler.com/bliki/FrequencyReducesDifficulty.html',
+      info: 'martinfowler.com/bliki/FrequencyReducesDifficulty.html',
       votes: 0,
       id: 1
     },
     {
       content: 'Premature optimization is the root of all evil',
       author: 'Donald Knuth',
-      info: 'http://wiki.c2.com/?PrematureOptimization',
+      info: 'wiki.c2.com/?PrematureOptimization',
       votes: 0,
       id: 2
     }
@@ -137,6 +137,11 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`a new anecdote ${anecdote.content} created!`)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+    navigate('/')
   }
 
   const anecdoteById = (id) =>
@@ -162,14 +167,12 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu anecdotes={anecdotes}/>
-      {/* <AnecdoteList anecdotes={anecdotes} /> */}
-      {/* <About /> */}
-      {/* <CreateNew addNew={addNew} /> */}
+      <div>{notification}</div>
       <Routes>
-      <Route path='/about' element={<About/>}/> 
       <Route path='/' element={<AnecdoteList anecdotes={anecdotes}/>} />
-      <Route path='/anecdotes/:id' element={<SingleAnecdote anecdote={anecdote}/>} />
       <Route path='/create' element={<CreateNew addNew={addNew}/>}/> 
+      <Route path='/about' element={<About/>}/> 
+      <Route path='/anecdotes/:id' element={<SingleAnecdote anecdote={anecdote}/>} />
       </Routes>
       <Footer />
     </div>
