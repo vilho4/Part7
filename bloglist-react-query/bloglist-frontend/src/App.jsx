@@ -1,13 +1,27 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
+import { useQuery } from '@tanstack/react-query'
+import { getBlogs } from './services/requests'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+  // useEffect(() => {
+  //   blogService.getAll().then((blogs) => setBlogs(blogs))
+  // }, [])]
+
+  const result = useQuery({
+    queryKey: ['blogs'],
+    queryFn: getBlogs
+  })
+
+  console.log(JSON.parse(JSON.stringify(result)))
+  if (result.isLoading) {
+    return <div>loading data...</div>
+  }
+
+  const blogs = result.data
 
   return (
     <div>
