@@ -5,12 +5,6 @@ import { useQuery } from '@tanstack/react-query'
 import { getBlogs } from './services/requests'
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([])
-
-  // useEffect(() => {
-  //   blogService.getAll().then((blogs) => setBlogs(blogs))
-  // }, [])]
-
   const result = useQuery({
     queryKey: ['blogs'],
     queryFn: getBlogs
