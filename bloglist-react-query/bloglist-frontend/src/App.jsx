@@ -13,10 +13,13 @@ import { createBlog, getBlogs } from './services/requests'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import { useNotification } from './components/NotificationContext'
 
 const App = () => {
   const { user, dispatch } = useUser()
-  console.log(user)
+  const { showNotification } = useNotification()
+
+  console.log(user, 'miltä user näyttää')
   const result = useQuery({
     queryKey: ['blogs'],
     queryFn: getBlogs,
@@ -34,7 +37,6 @@ const App = () => {
     return (
       <div>
         <Notification />
-        <h2>Login</h2>
         <LoginForm />
       </div>
     )
@@ -45,7 +47,15 @@ const App = () => {
       <Notification />
       <h2>blogs</h2>
       <div>{user.name} logged in </div>
-      <button onClick={() => dispatch({ type: 'LOGOUT' })}>
+      <button
+        onClick={() => {
+          dispatch({ type: 'LOGOUT' })
+          showNotification({
+            message: `${user.username} logged out succesfully`,
+            type: 'success'
+          })
+        }}
+      >
         Logout
       </button>
       <BlogForm />

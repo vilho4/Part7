@@ -8,8 +8,7 @@ export default function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const { dispatch: userDispatch } = useUser()
-  const { dispatch: notificationDispatch } =
-    useNotification()
+  const { showNotification } = useNotification()
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -19,43 +18,47 @@ export default function LoginForm() {
         password
       })
       userDispatch({ type: 'LOGIN', payload: user })
+      showNotification({
+        message: `${username} logged in succesfully`,
+        type: 'success'
+      })
       setUsername('')
       setPassword('')
     } catch (error) {
       console.error('Wrong credentials', error)
-      notificationDispatch({
-        type: 'SHOW_NOTIFICATION',
-        payload: 'Wrong credentials'
+      showNotification({
+        message: 'wrong credentials!',
+        type: 'error'
       })
-      setTimeout(() => {
-        notificationDispatch({ type: 'HIDE_NOTIFICATION' })
-      }, 3000)
     }
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type="text"
-          value={username}
-          onChange={({ target }) =>
-            setUsername(target.value)
-          }
-        />
-      </div>
-      <div>
-        password
-        <input
-          type="password"
-          value={password}
-          onChange={({ target }) =>
-            setPassword(target.value)
-          }
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
+    <div className="login-form-container">
+      <h3>Login</h3>
+      <form onSubmit={handleLogin} className="login-form">
+        <div>
+          <label>Username</label>
+          <input
+            type="text"
+            value={username}
+            onChange={({ target }) =>
+              setUsername(target.value)
+            }
+          />
+        </div>
+        <div>
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={({ target }) =>
+              setPassword(target.value)
+            }
+          />
+        </div>
+        <button type="submit">Login</button>
+      </form>
+    </div>
   )
 }

@@ -1,7 +1,8 @@
 import React, {
   createContext,
   useReducer,
-  useContext
+  useContext,
+  useRef
 } from 'react'
 
 const NotificationContext = createContext()
@@ -9,7 +10,8 @@ const NotificationContext = createContext()
 const initialState = ''
 
 const notificationReducer = (state, action) => {
-  console.log('mihin notifikaatio jää', action)
+  console.log('notificationcontextin action', action)
+  console.log('notificationcontextin state', state)
   switch (action.type) {
     case 'SHOW_NOTIFICATION':
       return action.payload
@@ -25,10 +27,28 @@ export const NotificationProvider = ({ children }) => {
     notificationReducer,
     initialState
   )
+  const timeoutRef = useRef(null)
+
+  const showNotification = (payload, seconds = 5) => {
+    // Clear previous timeout if a new notification is shown before it disappears
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+
+    dispatch({ type: 'SHOW_NOTIFICATION', payload })
+
+    timeoutRef.current = setTimeout(() => {
+      dispatch({ type: 'HIDE_NOTIFICATION' })
+    }, seconds * 1000)
+  }
 
   return (
     <NotificationContext.Provider
-      value={{ notification: state, dispatch }}
+      value={{
+        notification: state,
+        dispatch,
+        showNotification
+      }}
     >
       {children}
     </NotificationContext.Provider>
