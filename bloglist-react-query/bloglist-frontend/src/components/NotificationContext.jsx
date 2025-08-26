@@ -10,8 +10,8 @@ const NotificationContext = createContext()
 const initialState = ''
 
 const notificationReducer = (state, action) => {
-  console.log('notificationcontextin action', action)
-  console.log('notificationcontextin state', state)
+  // console.log('notificationcontextin action', action)
+  // console.log('notificationcontextin state', state)
   switch (action.type) {
     case 'SHOW_NOTIFICATION':
       return action.payload

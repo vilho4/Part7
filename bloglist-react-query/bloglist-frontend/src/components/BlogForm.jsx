@@ -5,7 +5,6 @@ import {
 import { useContext } from 'react'
 import { useNotification } from './NotificationContext'
 
-import { createBlog } from '../services/requests'
 import { useUser } from '../contexts/UserContext'
 import blogService from '../services/blogs'
 
@@ -14,7 +13,7 @@ const BlogForm = () => {
   const { showNotification } = useNotification()
   const qc = useQueryClient()
 
-  console.log(user, 'blogiformin user')
+  // console.log(user, 'blogiformin user')
 
   const newBlogMutation = useMutation({
     mutationFn: (newBlog) =>

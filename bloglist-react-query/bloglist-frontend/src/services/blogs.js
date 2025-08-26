@@ -27,11 +27,21 @@ const create = async (newObject, token) => {
   return response.data
 }
 
-export const update = (updatedBlog) => {
+const update = (updatedBlog) => {
   return axios
     .put(`${baseUrl}/${updatedBlog.id}`, updatedBlog)
     .then((response) => {
       return response.data
     })
 }
-export default { getAll, create, setToken, update }
+
+const remove = (id, token) => {
+  const config = {
+    headers: { Authorization: `Bearer ${token}` }
+  }
+  return axios
+    .delete(`${baseUrl}/${id}`, config)
+    .then((res) => res.data)
+}
+
+export default { getAll, create, setToken, update, remove }

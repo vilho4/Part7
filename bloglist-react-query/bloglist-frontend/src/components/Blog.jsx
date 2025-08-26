@@ -1,16 +1,11 @@
-import { useState } from 'react'
-import blogService from '../services/blogs'
+import LikeButton from './LikeButton'
+import DeleteButton from './DeleteButton'
 
-const Blog = ({ blog }) => {
-  const [likes, setLikes] = useState(blog.likes)
-
-  const handleLike = async () => {
-    const updatedBlog = { ...blog, likes: likes + 1 }
-    const returnedBlog =
-      await blogService.update(updatedBlog)
-    setLikes(returnedBlog.likes)
-  }
-
+const Blog = ({ blog, user }) => {
+  // console.log(user, 'user')
+  // if (blog.user.id) {
+  //   console.log(blog.user.id, 'mitäs blogissa oli')
+  // }
   return (
     <div>
       <h3>{blog.title}</h3>
@@ -22,8 +17,17 @@ const Blog = ({ blog }) => {
           <strong>URL:</strong> {blog.url}
         </li>
         <li>
-          <strong>Likes:</strong> {likes}{' '}
-          <button onClick={handleLike}>Like</button>
+          <strong>Likes:</strong> {blog.likes}{' '}
+          <LikeButton blog={blog} />
+        </li>
+        <li>
+          {/* Näytetään delete-nappi vain jos käyttäjä on blogin luoja */}
+          {/* {user.username === blog.user.username && (
+            <DeleteButton
+              blogId={blog.id}
+              token={user.token}
+            />
+          )} */}
         </li>
       </ul>
     </div>

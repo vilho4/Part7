@@ -9,29 +9,31 @@ import {
   useMutation,
   useQuery
 } from '@tanstack/react-query'
-import { createBlog, getBlogs } from './services/requests'
 import BlogForm from './components/BlogForm'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import { useNotification } from './components/NotificationContext'
+import UserInfo from './components/UserInfo'
 
 const App = () => {
   const { user, dispatch } = useUser()
   const { showNotification } = useNotification()
 
-  console.log(user, 'miltä user näyttää')
+  // console.log(user, 'miltä user näyttää')
   const result = useQuery({
     queryKey: ['blogs'],
-    queryFn: getBlogs,
+    queryFn: blogService.getAll,
     retry: 3
   })
 
-  console.log(JSON.parse(JSON.stringify(result)))
+  // console.log(JSON.parse(JSON.stringify(result)))
   if (result.isLoading) {
     return <div>loading data...</div>
   }
 
-  const blogs = result.data
+  const blogs = [...result.data].sort(
+    (a, b) => b.likes - a.likes
+  )
 
   if (!user) {
     return (
@@ -58,9 +60,10 @@ const App = () => {
       >
         Logout
       </button>
+      <UserInfo />
       <BlogForm />
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} user={user} />
       ))}
     </div>
   )
