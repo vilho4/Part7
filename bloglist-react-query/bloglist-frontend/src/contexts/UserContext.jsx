@@ -6,18 +6,25 @@ import {
   useEffect
 } from 'react'
 import blogService from '../services/blogs'
+import { jwtDecode } from 'jwt-decode'
 
 const UserContext = createContext()
 
 const userReducer = (state, action) => {
   switch (action.type) {
-    case 'LOGIN':
+    case 'LOGIN': {
+      const decoded = jwtDecode(action.payload.token)
+      const userDecodedId = {
+        ...action.payload,
+        id: decoded.id
+      }
       localStorage.setItem(
         'loggedBloggappUser',
-        JSON.stringify(action.payload)
+        JSON.stringify(userDecodedId)
       )
       blogService.setToken(action.payload.token)
-      return action.payload
+      return userDecodedId
+    }
     case 'LOGOUT':
       localStorage.removeItem('loggedBloggappUser')
       blogService.setToken(null)

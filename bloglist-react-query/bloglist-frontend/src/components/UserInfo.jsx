@@ -1,4 +1,5 @@
 import userService from '../services/users'
+import { Link } from 'react-router-dom'
 
 import {
   useMutation,
@@ -22,11 +23,22 @@ const UserInfo = () => {
   return (
     <div>
       <h1>Users</h1>
-      <ul>
+      {/* <ul>
         {users.map((user) => (
           <li key={user.id}>
             {user.username} — blogs created:{' '}
             {user.blogs.length}
+          </li>
+        ))}
+      </ul> */}
+
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>
+            <Link to={`/users/${user.id}`}>
+              {user.username}
+            </Link>{' '}
+            — blogs created: {user.blogs.length}
           </li>
         ))}
       </ul>

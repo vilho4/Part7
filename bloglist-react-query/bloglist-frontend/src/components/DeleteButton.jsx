@@ -4,16 +4,19 @@ import {
 } from '@tanstack/react-query'
 import blogService from '../services/blogs'
 
-const DeleteButton = ({ blogId, token }) => {
+const DeleteButton = ({ blogToDelete, user }) => {
+  // console.log('mitäs deletelle välitetään', blogToDelete)
+  // console.log(user, 'useri')
   const queryClient = useQueryClient()
 
   const deleteMutation = useMutation({
-    mutationFn: () => blogService.remove(blogId, token),
+    mutationFn: () =>
+      blogService.remove(blogToDelete.id, user.token),
     onMutate: async () => {
       await queryClient.cancelQueries(['blogs'])
       const prevBlogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(['blogs'], (old) =>
-        old.filter((b) => b.id !== blogId)
+        old.filter((b) => b.id !== blogToDelete)
       )
       return { prevBlogs }
     },
@@ -27,7 +30,7 @@ const DeleteButton = ({ blogId, token }) => {
   const handleDelete = () => {
     if (
       window.confirm(
-        'Are you sure you want to delete this blog?'
+        `Are you sure you want to delete "${blogToDelete.title}"?`
       )
     ) {
       deleteMutation.mutate()
@@ -35,9 +38,14 @@ const DeleteButton = ({ blogId, token }) => {
   }
 
   return (
-    <button onClick={handleDelete} style={{ color: 'red' }}>
-      Delete
-    </button>
+    <li>
+      <button
+        onClick={handleDelete}
+        style={{ color: 'red' }}
+      >
+        Delete
+      </button>
+    </li>
   )
 }
 
