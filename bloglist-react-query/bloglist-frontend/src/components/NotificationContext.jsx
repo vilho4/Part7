@@ -30,7 +30,6 @@ export const NotificationProvider = ({ children }) => {
   const timeoutRef = useRef(null)
 
   const showNotification = (payload, seconds = 5) => {
-    // Clear previous timeout if a new notification is shown before it disappears
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }

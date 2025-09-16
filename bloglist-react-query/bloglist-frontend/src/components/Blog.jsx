@@ -1,25 +1,16 @@
-import LikeButton from './LikeButton'
-import DeleteButton from './DeleteButton'
+import { Link } from 'react-router-dom'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ oneblog }) => {
   return (
-    <div>
-      <h3>{blog.title}</h3>
-      <ul>
-        <li>
-          <strong>Author:</strong> {blog.author}
-        </li>
-        <li>
-          <strong>URL:</strong> {blog.url}
-        </li>
-        <li>
-          <strong>Likes:</strong> {blog.likes}{' '}
-          <LikeButton blog={blog} />
-        </li>
-        {user.id === blog.user.id && (
-          <DeleteButton blogToDelete={blog} user={user} />
-        )}
-      </ul>
+    <div className="blog-card">
+      <h3>
+        <Link to={`/blogs/${oneblog.id}`}>
+          {oneblog.title}
+        </Link>
+      </h3>
+      <p>
+        <em>{oneblog.author}</em>
+      </p>
     </div>
   )
 }

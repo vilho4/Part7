@@ -2,18 +2,14 @@ import {
   useMutation,
   useQueryClient
 } from '@tanstack/react-query'
-import { useContext } from 'react'
-import { useNotification } from './NotificationContext'
-
 import { useUser } from '../contexts/UserContext'
+import { useNotification } from './NotificationContext'
 import blogService from '../services/blogs'
 
-const BlogForm = () => {
+const BlogForm = ({ onCancel }) => {
   const { user } = useUser()
   const { showNotification } = useNotification()
   const qc = useQueryClient()
-
-  // console.log(user, 'blogiformin user')
 
   const newBlogMutation = useMutation({
     mutationFn: (newBlog) =>
@@ -21,9 +17,7 @@ const BlogForm = () => {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['blogs'] })
     },
-    onError: (err) => {
-      console.error(err)
-    }
+    onError: (err) => console.error(err)
   })
 
   const onCreate = (event) => {
@@ -33,6 +27,7 @@ const BlogForm = () => {
       author: event.target.author.value,
       url: event.target.url.value
     }
+
     if (newBlog.title.length < 3) {
       showNotification({
         message: `${newBlog.title} title too short or empty`,
@@ -40,7 +35,9 @@ const BlogForm = () => {
       })
       return
     }
+
     event.target.title.value = ''
+
     newBlogMutation.mutate(newBlog, {
       onError: (err) => console.error(err),
       onSuccess: () => {
@@ -48,6 +45,7 @@ const BlogForm = () => {
           message: `${newBlog.title} blog created successfully`,
           type: 'success'
         })
+        if (onCancel) onCancel() // sulje lomake onnistuneen luomisen jälkeen
       }
     })
   }

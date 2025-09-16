@@ -1,10 +1,9 @@
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import userService from '../services/users'
 
 const UserDetailsPage = () => {
   const { id } = useParams()
-
   const {
     data: users,
     isLoading,
@@ -17,29 +16,30 @@ const UserDetailsPage = () => {
   if (isLoading) return <div>Loading...</div>
   if (isError) return <div>Error loading data</div>
 
-  const user = users.find((user) => user.id === id)
+  const user = users.find((u) => u.id === id)
   if (!user) return <div>User not found</div>
 
-  if (user.blogs.length > 0) {
-    return (
-      <div>
-        <h2>{user.username}</h2>
-        <h3>Blogs created:</h3>
-        <ul>
-          {user.blogs.map((blog) => (
-            <li key={blog.id}>{blog.title}</li>
-          ))}
-        </ul>
-      </div>
-    )
-  } else {
-    return (
-      <div>
-        <h2>{user.username}</h2>
+  return (
+    <div className="blog-card">
+      <h2>{user.username}</h2>
+      {user.blogs.length > 0 ? (
+        <>
+          <h3>Blogs created:</h3>
+          <ul>
+            {user.blogs.map((blog) => (
+              <li key={blog.id}>
+                <Link to={`/blogs/${blog.id}`}>
+                  {blog.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : (
         <p>Has not created any blogs yet</p>
-      </div>
-    )
-  }
+      )}
+    </div>
+  )
 }
 
 export default UserDetailsPage

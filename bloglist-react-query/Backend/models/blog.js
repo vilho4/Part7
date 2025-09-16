@@ -3,18 +3,18 @@ const mongoose = require('mongoose')
 const blogSchema = mongoose.Schema({
   title: {
     type: String,
-    required:[true, 'Title is required']
+    required: [true, 'Title is required'],
   },
   author: String,
-  url:{
+  url: {
     type: String,
-    required:[true, 'Url is required']
+    required: [true, 'Url is required'],
   },
   likes: Number,
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 })
 
 blogSchema.set('toJSON', {
@@ -22,7 +22,7 @@ blogSchema.set('toJSON', {
     returnedObject.id = returnedObject._id.toString()
     delete returnedObject._id
     delete returnedObject.__v
-  }
+  },
 })
 
 module.exports = mongoose.model('Blog', blogSchema)

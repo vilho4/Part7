@@ -3,11 +3,11 @@ import {
   useQueryClient
 } from '@tanstack/react-query'
 import blogService from '../services/blogs'
+import { useNotification } from './NotificationContext'
 
 const DeleteButton = ({ blogToDelete, user }) => {
-  // console.log('mitäs deletelle välitetään', blogToDelete)
-  // console.log(user, 'useri')
   const queryClient = useQueryClient()
+  const { showNotification } = useNotification()
 
   const deleteMutation = useMutation({
     mutationFn: () =>
@@ -16,12 +16,22 @@ const DeleteButton = ({ blogToDelete, user }) => {
       await queryClient.cancelQueries(['blogs'])
       const prevBlogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(['blogs'], (old) =>
-        old.filter((b) => b.id !== blogToDelete)
+        old.filter((b) => b.id !== blogToDelete.id)
       )
       return { prevBlogs }
     },
     onError: (err, vars, ctx) => {
       queryClient.setQueryData(['blogs'], ctx.prevBlogs)
+      showNotification({
+        message: 'Blog deletion failed',
+        type: 'error'
+      })
+    },
+    onSuccess: () => {
+      showNotification({
+        message: `Blog "${blogToDelete.title}" deleted`,
+        type: 'success'
+      })
     },
     onSettled: () =>
       queryClient.invalidateQueries(['blogs'])
